@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <style>
+        .button {
+            border: 1px solid #3498db;
+            background: none;
+            padding: 10px 20px;
+            font-size: 20px;
+            font-family: "montserrat";
+            cursor: pointer;
+            margin: 2px;
+            transition: 0.8s;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        [class^="btn"]{
+        color: #3498db;
+        }
+        [class^="btn"]:hover{
+        color: #fff;
+        }
+        .button::before{
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background: #3498db;
+            z-index: -1;
+            transition: 0.8s;
+        }
+        .btn1::before,.btn2::before,.btn3::before,.btn4::before,.btn5::before,.btn6::before,.btn7::before,.btn8::before,.btn9::before,.btn10::before,.btn11::before,.btn12::before,.btn13::before,.btn14::before,.btn15::before,.btn16::before,.btn17::before,.btn18::before,.btn19::before{
+            top: 0;
+            border-radius: 0 0 50% 50%;
+        }
+        [class^="btn"]:hover::before, .button:hover::before {
+            height: 180%;
+        }
+        .buttonR {
+            background-color: #FF0000;
+            border: none;
+            padding: 5px 8px;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .buttonG {
+            background-color: #00FF00;
+            border: none;
+            padding: 5px 8px;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .buttonBLUE {
+            background-color: #0000FF;
+            border: none;
+            padding: 5px 8px;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .buttonBLACK {
+            background-color: #000000;
+            border: none;
+            padding: 5px 8px;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .buttonPINK {
+            background-color: #FFC0CB;
+            border: none;
+            padding: 5px 8px;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .buttonGOLD {
+            background-color: #FFD700;
+            border: none;
+            padding: 5px 8px;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .buttons-container {
+            
+            border: 2px solid #000000; /* 黑色邊框，2px 寬度 */
+
+            border-radius: 4px; /* 可以添加圓角 */
+        }
+        #buttons-container {
+
+            text-align: center;
+            margin: auto;
+
+        }
+
+    </style>
+</head>
+    <body>
+        <div class="buttons-container" id="buttons-container">
+            <p> </p>
+            <button class="button btn1" id="Button1">Increase Z</button>
+            <button class="button btn2" id="Button2">Decrease Z</button>
+            <button class="button btn3" id="Button3">Increase R</button>
+            <button class="button btn4" id="Button4">Decrease R</button>
+
+            <p> </p>
+            <button class="button btn5" id="Button5">Increase theta</button>
+            <button class="button btn6" id="Button6">Decrease theta</button>
+            <button class="button btn7" id="Button7">Increase phi</button>
+            <button class="button btn8" id="Button8">Decrease phi</button>
+            <p> </p>
+            <button class="button btn9" id="Button9">Wider</button>
+            <button class="button btn10" id="Button10">Narrower</button>
+            <button class="button btn11" id="Button11">Higher</button>
+            <button class="button btn12" id="Button12">Shorter</button>
+            <p> </p>
+            <button class="button btn13" id="xButton">Rotate X</button>
+            <button class="button btn14" id="yButton">Rotate Y</button>
+            <button class="button btn15" id="zButton">Rotate Z</button>
+            <button class="button btn16" id="sButton">Stop</button>
+            <button class="button btn17" id="speed_up">speed up</button>
+            <button class="button btn18" id="speed_down">speed down</button>
+            <button class="button btn19" id="resetRotate">Reset Rotate</button>
+            <p> </p>
+            <font style="font-size:22px">Color   </font>
+            <p> </p>
+            <button class="buttonR" id="LBR"></button>
+            <button class="buttonG" id="LBG"></button>
+            <button class="buttonBLUE" id="LBBLUE"></button>
+            <button class="buttonBLACK" id="LBBLACK"></button>
+            <button class="buttonPINK" id="LBPINK"></button>
+            <button class="buttonGOLD" id="LBGOLD"></button>
+            <p> </p>
+        </div>
+    </body>
+
+        <canvas id="gl-canvas" width="512" height="512">
+            Oops ... your browser doesn't support the HTML5 canvas element
+        </canvas>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+
+        attribute  vec4 vPosition;
+        attribute  vec4 vColor;
+        varying vec4 fColor;
+        
+        uniform vec3 theta2;
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        void main() 
+        {
+            // Compute the sines and cosines of theta for each of
+            //   the three axes in one computation.
+            vec3 angles = radians( theta2 );
+            vec3 c = cos( angles );
+            vec3 s = sin( angles );
+        
+            // Remeber: thse matrices are column-major
+            mat4 rx = mat4( 1.0,  0.0,  0.0, 0.0,
+                    0.0,  c.x,  s.x, 0.0,
+                    0.0, -s.x,  c.x, 0.0,
+                    0.0,  0.0,  0.0, 1.0 );
+        
+            mat4 ry = mat4( c.y, 0.0, -s.y, 0.0,
+                    0.0, 1.0,  0.0, 0.0,
+                    s.y, 0.0,  c.y, 0.0,
+                    0.0, 0.0,  0.0, 1.0 );
+        
+        
+            mat4 rz = mat4( c.z, -s.z, 0.0, 0.0,
+                    s.z,  c.z, 0.0, 0.0,
+                    0.0,  0.0, 1.0, 0.0,
+                    0.0,  0.0, 0.0, 1.0 );
+        
+            fColor = vColor;
+            gl_Position = rz * ry * rx * vPosition *projectionMatrix * modelViewMatrix;
+        } 
+    </script>
+        
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        
+            precision mediump float;
+            
+            uniform vec4 fColor;
+            
+            void
+            main()
+            {
+                gl_FragColor = fColor;
+            }
+    </script>
+    <script type="text/javascript" src="../Common/webgl-utils.js"></script>
+    <script type="text/javascript" src="../Common/initShaders.js"></script>
+    <script type="text/javascript" src="../Common/MV.js"></script>
+    <script type="text/javascript" src="hat.js"></script>
+</html>
